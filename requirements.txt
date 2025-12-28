@@ -1,0 +1,11 @@
+---
+
+### 📦 Don't Forget the `requirements.txt`
+To make the README work, you need this file in your GitHub repo as well. It tells the server which libraries to install.
+
+**Create a file named `requirements.txt` and paste this:**
+```text
+discord.py
+firebase-admin
+python-dotenv
+requests
