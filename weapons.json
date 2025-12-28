@@ -1,0 +1,52 @@
+{
+  "digital_overwrites": {
+    "humanity_audit_v1": {
+      "name": "Humanity Audit Alpha",
+      "type": "Logic",
+      "description": "Exposes hidden PADOOS bias in triage algorithms.",
+      "damage_to_malice": 25,
+      "equity_boost": 15,
+      "cooldown_sec": 60,
+      "required_level": 1,
+      "padoos_bypass_authorized": true
+    },
+    "script_purge_bias": {
+      "name": "Bias Purge Script",
+      "type": "Code",
+      "description": "Deletes PADOOS economic-tier prioritization fields.",
+      "damage_to_malice": 40,
+      "equity_boost": 10,
+      "cooldown_sec": 120,
+      "required_level": 2,
+      "target_zone": "Zone_0_Admin"
+    }
+  },
+  "clinical_tools": {
+    "sheikah_scalpel": {
+      "name": "Sheikah-Infused Scalpel",
+      "type": "Medical/Digital",
+      "description": "Cuts through physical tissue and digital hardening simultaneously.",
+      "healing_power": 10,
+      "malice_reduction": 5,
+      "usage_limit": 5,
+      "special_effect": "reveals_hidden_vitals"
+    },
+    "logic_shield_injector": {
+      "name": "Logic Shield Serum",
+      "type": "Pharmacy",
+      "description": "Inoculates the patient against Archivist data-corruption.",
+      "healing_power": 30,
+      "malice_resistance_buff": 0.25,
+      "cooldown_sec": 300,
+      "padoos_cost_bypass": "High"
+    },
+    "epinephrine_auto_override": {
+      "name": "Epi-Pen (PADOOS Override)",
+      "type": "Emergency",
+      "description": "Standard medical epi-pen with a hacked chip to ignore paywalls.",
+      "healing_power": 50,
+      "equity_requirement": 40,
+      "is_mission_critical": true
+    }
+  }
+}
