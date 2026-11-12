@@ -1,8 +1,8 @@
 # Krebsville Nights: Zone 0
 
-Version 0.0.0
+**Version 0.0.0 — Version 0 prototype**
 
-A deterministic prequel prototype to **Krebsville Nights: Unequal Treatment Part 1**. The project keeps its FastAPI story backend and Colab-compatible Python functions, and now includes a small browser-based Three.js 3D alley game at the site root.
+A deterministic prequel prototype to **Krebsville Nights: Unequal Treatment Part 1**. The project keeps its FastAPI story backend and Colab-compatible Python functions, and includes a small browser-based Three.js alley game.
 
 ## What’s included
 
@@ -10,7 +10,7 @@ A deterministic prequel prototype to **Krebsville Nights: Unequal Treatment Part
 - Choice-based narrative with stable scene and choice IDs
 - Character registry with session-specific Witness display name
 - A simple Three.js browser client featuring a rainy alley, controllable Witness, radio, clinic entrance, and maintenance hatch
-- Characters appear as text and dialogue; this prototype does not include character portraits, animation, or detailed 3D character models
+- Characters appear as text and dialogue; this prototype does not include character portraits, authored character animations, or detailed 3D character models
 - Preset deterministic story content; no AI API, credentials, Firebase, Discord messaging, or game service integrations
 
 ## Character roster
@@ -21,6 +21,14 @@ A deterministic prequel prototype to **Krebsville Nights: Unequal Treatment Part
 - **The Municipal Dispatcher** — remote municipal employee contacting the Witness about a transfer; motives remain ambiguous.
 
 The arrival scene contains only the Witness; the radio is an environmental object until investigated. Radio route: Witness and remote Radio Voice. Clinic route: Witness and Clinic Nurse. Hatch route: Witness alone. Dispatch: Witness and remote Municipal Dispatcher. Dr. Frederick M. Grant, Nurse Carter, Maria Voss, and characters from Scar City do not appear in this opening prototype.
+
+## Version 0 scope and 3D direction
+
+Version 0 is an early playable slice, not a finished 3D RPG. The browser client is built with Three.js, while Python/FastAPI remains responsible for sessions, story choices, character participation, and statistics. The client calls the existing story endpoints, so the Colab workflow and direct Python calls remain available independently of the 3D view. Godot is not required.
+
+The first 3D slice focuses on the alley: move the Witness with **WASD** or the arrow keys, approach the radio, clinic door, or maintenance hatch, and press **E** or click an object to investigate. The client displays the backend's narrative text, choices, characters, and stats. Use the story buttons as an alternative to navigating to an object.
+
+The simple scene uses placeholder geometry and a Three.js module loaded from jsDelivr; a connection to the internet is required to load that module in the browser. The current prototype does not include detailed character/environment assets, portraits, a full animation system, persistence across server restarts, or a full 3D RPG feature set. Future improvements such as route-specific lighting and object animation, save/resume, richer interaction prompts, and mobile polish are ideas for later work, not claims about the current implementation.
 
 ## Run the game locally
 
@@ -33,10 +41,6 @@ The arrival scene contains only the Witness; the radio is an environmental objec
    uvicorn app:app --reload
    ```
 3. Open <http://localhost:8000/> for the 3D game, or <http://localhost:8000/docs> for API documentation.
-
-Use **WASD** or arrow keys to move. Approach the radio, clinic door, or hatch and press **E** (or click the object) to investigate. The narrative choices are displayed in the dialogue panel.
-
-The Three.js module is loaded from jsDelivr, so an internet connection is needed to load the 3D client. The story API and Colab functions remain Python and do not depend on the 3D client.
 
 ## API quick start
 
@@ -94,7 +98,7 @@ python -m pytest
 
 ## Project version
 
-This remains the Version 0 Zone 0 prototype. The FastAPI metadata and `VERSION` file declare `0.0.0`.
+This repository declares **Version 0.0.0 (Version 0)** in `VERSION` and `APP_VERSION` / FastAPI metadata. This is a prototype version declaration; it does not imply a feature-complete 3D release.
 
 ## License
 
