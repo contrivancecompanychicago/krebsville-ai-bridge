@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
@@ -12,8 +12,8 @@ app = FastAPI(
     title="Krebsville AI Bridge",
     version=APP_VERSION,
     description=(
-        "Onboarding chat backend for the text-based prequel to "
-        "Krebsville Nights: Unequal Treatment Part 1."
+        "Text-based Zone 0 prequel for Krebsville Nights: "
+        "Unequal Treatment Part 1."
     ),
 )
 
@@ -42,12 +42,65 @@ class SessionState(BaseModel):
     history: List[str] = Field(default_factory=list)
 
 
+PresenceType = Literal["local", "remote"]
+
+# Character records are deliberately kept separate from the narrative prose.
+# Names for the Witness are supplied per session rather than stored here.
+CHARACTER_REGISTRY = {
+    "witness": {
+        "id": "witness",
+        "name": "The Witness",
+        "role": "Player character",
+        "description": (
+            "A new arrival in Zone 0 investigating warnings, missing records, "
+            "and unequal access to resources."
+        ),
+        "player_controlled": True,
+        "presence": "local",
+    },
+    "radio_voice": {
+        "id": "radio_voice",
+        "name": "The Radio Voice",
+        "role": "Unidentified radio contact",
+        "description": (
+            "An unidentified person communicating urgently through a damaged radio; "
+            "their identity remains undisclosed."
+        ),
+        "player_controlled": False,
+        "presence": "remote",
+    },
+    "clinic_nurse": {
+        "id": "clinic_nurse",
+        "name": "The Clinic Nurse",
+        "role": "Healthcare worker",
+        "description": (
+            "An unnamed, observant and cautious healthcare worker concerned about patients."
+        ),
+        "player_controlled": False,
+        "presence": "local",
+    },
+    "municipal_dispatcher": {
+        "id": "municipal_dispatcher",
+        "name": "The Municipal Dispatcher",
+        "role": "Municipal employee",
+        "description": (
+            "A municipal employee contacting the Witness about witnessing a transfer; "
+            "their motives are ambiguous."
+        ),
+        "player_controlled": False,
+        "presence": "remote",
+    },
+}
+
+
+# Scene prose and character participation are maintained independently.
 STORY = {
     "arrival": {
         "title": "The Alley Behind the Clinic",
+        "characters": ["witness"],
         "text": (
             "The rain keeps falling on Krebsville as you wake beneath a rusted fire escape. "
-            "A half-broken radio crackles with a voice too calm for the hour. "
+            "A half-broken radio sits in the alley, its speaker hissing without a clear voice. "
             "On the other side of the alley, the Family Clinic is lit like a confession booth."
         ),
         "choices": [
@@ -58,9 +111,11 @@ STORY = {
     },
     "radio": {
         "title": "A Voice in the Static",
+        "characters": ["witness", "radio_voice"],
         "text": (
-            "The voice says, 'If you hear this, you are early enough to matter. Krebsville is already "
-            "counting on you to choose who gets the truth.' A loose wire sparks behind the dumpster."
+            "The Radio Voice (remote) says, 'If you hear this, you are early enough to matter. "
+            "Krebsville is already counting on you to choose who gets the truth.' "
+            "A loose wire sparks behind the dumpster."
         ),
         "choices": [
             {"id": "follow", "label": "Follow the voice's warning", "next_scene": "dispatch"},
@@ -69,9 +124,11 @@ STORY = {
     },
     "clinic": {
         "title": "The Waiting Room",
+        "characters": ["witness", "clinic_nurse"],
         "text": (
-            "Inside the clinic, a nurse is sorting files under a flickering lamp. The room smells like antiseptic, "
-            "dust, and something older: fear. She looks up and asks what brought you here tonight."
+            "Inside the clinic, the Clinic Nurse sorts files under a flickering lamp. The room smells "
+            "like antiseptic, dust, and something older: fear. She looks up. The Clinic Nurse says, "
+            "'I can tell you what is missing. I can't promise who is safe to ask.'"
         ),
         "choices": [
             {"id": "truth", "label": "Tell her the truth about the radio", "next_scene": "dispatch"},
@@ -80,9 +137,10 @@ STORY = {
     },
     "hatch": {
         "title": "The Service Tunnel",
+        "characters": ["witness"],
         "text": (
-            "Beneath the hatch is a narrow service tunnel lined with old meters and electrical tape. Someone has written "
-            "the words 'Don't let the city decide' in the dust."
+            "Beneath the hatch is a narrow service tunnel lined with old meters and electrical tape. "
+            "Someone has written the words 'Don't let the city decide' in the dust."
         ),
         "choices": [
             {"id": "route", "label": "Follow the tunnel toward the station", "next_scene": "dispatch"},
@@ -91,9 +149,11 @@ STORY = {
     },
     "dispatch": {
         "title": "The City Makes a Call",
+        "characters": ["witness", "municipal_dispatcher"],
         "text": (
-            "A dispatcher from the municipal line calls your name before you can answer. 'We need a witness to the next "
-            "transfer. If you go in, you will be part of the story. If you walk away, the city keeps writing it.'"
+            "A municipal line clicks alive. The Municipal Dispatcher (remote) says, 'Your presence "
+            "has been noted. We require a witness to the next transfer. Participation is voluntary.' "
+            "The line stays open, leaving the motive unclear."
         ),
         "choices": [
             {"id": "accept", "label": "Accept the assignment and go in", "next_scene": "ending"},
@@ -102,6 +162,7 @@ STORY = {
     },
     "ending": {
         "title": "A Line Is Drawn",
+        "characters": ["witness"],
         "text": (
             "The night settles around you, and Krebsville finally reveals its shape: not a city of monsters, but a machine built "
             "to move people before they can speak. Your choices do not end the story. They start the version that is still hidden "
@@ -112,6 +173,25 @@ STORY = {
 }
 
 SESSIONS: Dict[str, SessionState] = {}
+
+
+def characters_for_scene(session: SessionState, scene_id: str) -> List[dict]:
+    """Return the scene roster with the Witness's session-specific display name."""
+    scene = STORY.get(scene_id, STORY["ending"])
+    participants = []
+    for character_id in scene["characters"]:
+        character = CHARACTER_REGISTRY[character_id]
+        participants.append(
+            {
+                "id": character["id"],
+                "display_name": (
+                    session.player_name if character["player_controlled"] else character["name"]
+                ),
+                "role": character["role"],
+                "presence": character["presence"],
+            }
+        )
+    return participants
 
 
 def apply_choice(session: SessionState, choice_id: str) -> None:
@@ -185,6 +265,7 @@ def start_game(payload: StartRequest) -> dict:
         "message": scene["text"],
         "title": scene["title"],
         "choices": scene["choices"],
+        "characters": characters_for_scene(session, session.current_scene),
         "version": APP_VERSION,
     }
 
@@ -207,16 +288,16 @@ def advance_game(payload: AdvanceRequest) -> dict:
         apply_choice(session, choice["id"])
 
     current_scene = STORY.get(session.current_scene, STORY["ending"])
-    response = {
+    return {
         "session_id": session.session_id,
         "player_name": session.player_name,
         "title": current_scene["title"],
         "message": current_scene["text"],
         "choices": current_scene.get("choices", []),
         "stats": session.stats,
+        "characters": characters_for_scene(session, session.current_scene),
         "version": APP_VERSION,
     }
-    return response
 
 
 @app.get("/api/onboarding/session/{session_id}")
@@ -234,6 +315,7 @@ def get_session(session_id: str) -> dict:
         "choices": current_scene.get("choices", []),
         "stats": session.stats,
         "history": session.history,
+        "characters": characters_for_scene(session, session.current_scene),
         "version": APP_VERSION,
     }
 
@@ -247,4 +329,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
-
