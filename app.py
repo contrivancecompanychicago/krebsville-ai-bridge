@@ -275,9 +275,12 @@ def start_game(payload: StartRequest) -> dict:
     scene = STORY[session.current_scene]
     return {
         "session_id": session_id,
+        "player_name": session.player_name,
+        "current_scene": session.current_scene,
         "message": scene["text"],
         "title": scene["title"],
         "choices": scene["choices"],
+        "stats": session.stats,
         "characters": characters_for_scene(session, session.current_scene),
         "version": APP_VERSION,
     }
@@ -304,6 +307,7 @@ def advance_game(payload: AdvanceRequest) -> dict:
     return {
         "session_id": session.session_id,
         "player_name": session.player_name,
+        "current_scene": session.current_scene,
         "title": current_scene["title"],
         "message": current_scene["text"],
         "choices": current_scene.get("choices", []),

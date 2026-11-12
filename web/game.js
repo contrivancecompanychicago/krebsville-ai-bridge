@@ -14,11 +14,15 @@ const choicesElement = document.querySelector("#choices");
 const interactionPrompt = document.querySelector("#interaction-prompt");
 const controlsHint = document.querySelector("#controls-hint");
 const toast = document.querySelector("#toast");
+const statsPanel = document.querySelector("#stats-panel");
+const statsGrid = document.querySelector("#stats-grid");
+const sessionBar = document.querySelector("#session-bar");
+const sessionIdLabel = document.querySelector("#session-id");
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x101820);
 scene.fog = new THREE.Fog(0x101820, 12, 42);
-const camera = new THREE.PerspectiveCamera( sixty(), window.innerWidth / window.innerHeight, 0.1, 100 );
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -26,8 +30,6 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
-function sixty() { return 60; }
 
 scene.add(new THREE.HemisphereLight(0x9caec2, 0x171719, 2.0));
 const moon = new THREE.DirectionalLight(0xa6c8ff, 2.0);
@@ -45,6 +47,9 @@ const materials = {
   clinic: new THREE.MeshStandardMaterial({ color: 0x777878, roughness: 0.9 }),
 };
 
+const playerNameLabel = document.querySelector("#status");
+let playerName = "Visitor";
+
 function box(parent, name, size, position, material, options = {}) {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), material);
   mesh.name = name;
@@ -57,7 +62,6 @@ function box(parent, name, size, position, material, options = {}) {
   return mesh;
 }
 
-// A narrow, gray alley with the clinic lit at its far end.
 box(scene, "wet alley", [12, 0.2, 42], [0, -0.15, -8], materials.asphalt);
 box(scene, "left brick wall", [0.7, 8, 42], [-6, 3.8, -8], materials.brick);
 box(scene, "right brick wall", [0.7, 8, 42], [6, 3.8, -8], materials.brickDark);
@@ -68,7 +72,6 @@ box(scene, "clinic sign", [4, 0.7, 0.3], [0, 5.5, -26.2], materials.amber);
 box(scene, "fire escape", [4, 0.15, 3], [-3.6, 4.5, -11], materials.metal);
 box(scene, "fire escape rail", [4, 0.12, 0.12], [-3.6, 5.5, -12.4], materials.metal);
 
-// Rain is a lightweight static particle field; the game runs without downloaded assets.
 const rainCount = 520;
 const rainPositions = new Float32Array(rainCount * 3);
 for (let i = 0; i < rainCount; i++) {
@@ -81,7 +84,6 @@ rainGeometry.setAttribute("position", new THREE.BufferAttribute(rainPositions, 3
 const rain = new THREE.Points(rainGeometry, new THREE.PointsMaterial({ color: 0xb9c9d5, size: 0.045, transparent: true, opacity: 0.55 }));
 scene.add(rain);
 
-// Interactable alley props map to existing API choice IDs.
 const radio = new THREE.Group();
 radio.position.set(-2.2, 0.25, -2.0);
 radio.userData.choiceId = "radio";
@@ -147,11 +149,32 @@ function notify(text) {
   toastTimer = setTimeout(() => toast.classList.add("hidden"), 2200);
 }
 
+function renderStats(stats) {
+  const entries = [
+    ["clarity", "Clarity"],
+    ["trust", "Trust"],
+    ["pressure", "Pressure"],
+    ["resolve", "Resolve"],
+  ];
+  statsGrid.replaceChildren();
+  for (const [key, label] of entries) {
+    const item = document.createElement("div");
+    item.className = "stat-item";
+    item.innerHTML = `
+      <span class="stat-label">${label}</span>
+      <strong class="stat-value">${stats?.[key] ?? 0}</strong>
+    `;
+    statsGrid.append(item);
+  }
+}
+
 function showStory(data, sceneId) {
   activeScene = sceneId;
   activeChoices = data.choices || [];
   titleElement.textContent = data.title || "Krebsville";
   messageElement.textContent = data.message || "The line has gone quiet.";
+  playerName = data.player_name || playerName;
+  playerNameLabel.textContent = `${playerName} · ${data.title || "Night Watch"}`;
   rosterElement.replaceChildren();
   for (const character of data.characters || []) {
     const badge = document.createElement("span");
@@ -167,7 +190,18 @@ function showStory(data, sceneId) {
     button.addEventListener("click", () => advance(choice));
     choicesElement.append(button);
   }
+  dialogModeUpdate();
+  if (data.stats) renderStats(data.stats);
+  if (data.session_id) {
+    sessionIdLabel.textContent = `${data.session_id.slice(0, 8)}…`;
+    sessionIdLabel.title = data.session_id;
+  }
+}
+
+function dialogModeUpdate() {
   dialogue.classList.remove("hidden");
+  statsPanel.classList.remove("hidden");
+  sessionBar.classList.remove("hidden");
   if (activeChoices.length === 0) {
     const restart = document.createElement("button");
     restart.className = "choice-button primary";
@@ -192,10 +226,14 @@ async function startGame() {
   startError.textContent = "";
   startButton.disabled = true;
   try {
-    const playerName = nameInput.value.trim() || "Visitor";
-    const data = await api("/api/onboarding/start", { player_name: playerName, source: "threejs" });
+    const playerNameInput = nameInput.value.trim() || "Visitor";
+    const data = await api("/api/onboarding/start", {
+      player_name: playerNameInput,
+      source: "threejs",
+    });
     sessionId = data.session_id;
     activeScene = "arrival";
+    playerName = data.player_name || playerNameInput;
     startPanel.classList.add("hidden");
     hud.classList.remove("hidden");
     controlsHint.classList.remove("hidden");
@@ -315,3 +353,5 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+renderStats({ clarity: 0, trust: 0, pressure: 0, resolve: 0 });

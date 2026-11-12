@@ -18,7 +18,16 @@ button:disabled { opacity: .55; cursor: wait; }
 button.primary { width: 100%; background: #78512f; border-color: #bb8b55; text-align: center; font-weight: 700; }
 button.primary:hover:not(:disabled) { background: #91643a; }
 .error { min-height: 1em; color: #f0a090; font-size: .85rem; }
-.hud { position: absolute; top: 22px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; text-shadow: 0 2px 8px #000; }
+.session-bar { position: absolute; top: 18px; left: 18px; display: flex; align-items: center; gap: 8px; z-index: 4; font-size: .75rem; color: #d1d3d2; }
+.session-tag { border: 1px solid rgba(211, 165, 104, .45); background: rgba(12, 15, 16, .78); padding: 6px 9px; border-radius: 999px; letter-spacing: .08em; text-transform: uppercase; }
+#session-id { background: rgba(12, 15, 16, .76); border: 1px solid rgba(151, 170, 180, .4); padding: 6px 9px; border-radius: 999px; }
+.stats-panel { position: absolute; left: 18px; top: 84px; z-index: 3; padding: 12px 14px; width: min(230px, calc(100vw - 36px)); border-radius: 8px; }
+.panel-label { margin: 0 0 10px; text-transform: uppercase; letter-spacing: .13em; color: #c99a62; font-size: .65rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.stat-item { background: rgba(17, 21, 23, .8); border: 1px solid rgba(132, 148, 155, .22); border-radius: 6px; padding: 8px 8px 7px; }
+.stat-label { display: block; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: #9fa8aa; }
+.stat-value { display: block; margin-top: 4px; font-size: 1.1rem; }
+.hud { position: absolute; top: 22px; left: 260px; right: 24px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; text-shadow: 0 2px 8px #000; }
 .hud h2 { margin: 4px 0; font-size: clamp(1.1rem, 4vw, 1.65rem); }
 #status { color: #c4c0b7; background: rgba(15, 18, 19, .65); padding: 9px 12px; border-radius: 4px; font-size: .8rem; }
 .dialogue { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); width: min(820px, calc(100vw - 32px)); max-height: 45vh; overflow: auto; padding: 19px 22px; border-radius: 7px; }
@@ -31,4 +40,4 @@ button.primary:hover:not(:disabled) { background: #91643a; }
 .interaction-prompt { position: absolute; left: 50%; bottom: 48vh; transform: translateX(-50%); padding: 8px 13px; border-radius: 4px; background: rgba(15, 18, 19, .85); border: 1px solid rgba(211, 165, 104, .55); color: #f3dfc5; font-size: .85rem; pointer-events: none; }
 .controls-hint { position: absolute; right: 20px; bottom: 20px; color: #ddd6c9; background: rgba(13, 16, 17, .72); border-radius: 4px; padding: 8px 11px; font-size: .74rem; pointer-events: none; }
 .toast { position: absolute; top: 92px; left: 50%; transform: translateX(-50%); background: rgba(15, 18, 19, .9); color: #ead9c2; border: 1px solid rgba(211, 165, 104, .45); padding: 9px 14px; border-radius: 4px; font-size: .84rem; }
-@media (max-width: 620px) { .hud { top: 12px; left: 12px; right: 12px; } .dialogue { bottom: 12px; width: calc(100vw - 20px); padding: 14px; max-height: 52vh; } .controls-hint { left: 12px; right: auto; bottom: auto; top: 76px; font-size: .68rem; } .interaction-prompt { bottom: 54vh; } #status { font-size: .68rem; } }
+@media (max-width: 620px) { .session-bar { left: 12px; top: 12px; right: 12px; justify-content: space-between; } .stats-panel { left: 12px; top: 60px; width: calc(100vw - 24px); } .hud { top: 128px; left: 12px; right: 12px; } .dialogue { bottom: 12px; width: calc(100vw - 20px); padding: 14px; max-height: 52vh; } .controls-hint { left: 12px; right: auto; bottom: auto; top: 76px; font-size: .68rem; } .interaction-prompt { bottom: 54vh; } #status { font-size: .68rem; } }

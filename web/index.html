@@ -21,8 +21,21 @@
         <p id="start-error" class="error" role="alert"></p>
       </section>
 
+      <div id="session-bar" class="session-bar hidden">
+        <span id="session-tag" class="session-tag">Session live</span>
+        <span id="session-id">pending</span>
+      </div>
+
+      <aside id="stats-panel" class="panel stats-panel hidden" aria-label="story stats">
+        <p class="panel-label">Witness status</p>
+        <div id="stats-grid" class="stats-grid"></div>
+      </aside>
+
       <header id="hud" class="hud hidden">
-        <div><span class="eyebrow">ZONE 0 · SCENE</span><h2 id="scene-title"></h2></div>
+        <div>
+          <span class="eyebrow">ZONE 0 · SCENE</span>
+          <h2 id="scene-title"></h2>
+        </div>
         <div id="status">Rainfall · 02:17 AM</div>
       </header>
 
