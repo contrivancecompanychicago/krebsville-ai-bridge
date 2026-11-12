@@ -2,44 +2,41 @@
 
 Version 0.0.0
 
-A deterministic, text-based prequel to **Krebsville Nights: Unequal Treatment Part 1**. The opening begins in Zone 0, Scene 0: “The Alley Behind the Clinic.” The Witness investigates warnings, missing records, and unequal access to resources through radio, clinic, and maintenance-hatch routes.
+A deterministic prequel prototype to **Krebsville Nights: Unequal Treatment Part 1**. The project keeps its FastAPI story backend and Colab-compatible Python functions, and now includes a small browser-based Three.js 3D alley game at the site root.
 
-## Overview
+## What’s included
 
-This repository provides a lightweight FastAPI story backend with session-based narrative progression and simple stats. Story text and choices are preset; no AI API, credentials, Firebase, Discord messaging, or other external services are used by the story engine.
-
-Characters appear as text and dialogue. **Portraits, animation, and a 3D RPG client are not included.**
+- FastAPI backend for session-based story progression and simple stats
+- Choice-based narrative with stable scene and choice IDs
+- Character registry with session-specific Witness display name
+- A simple Three.js browser client featuring a rainy alley, controllable Witness, radio, clinic entrance, and maintenance hatch
+- Characters appear as text and dialogue; this prototype does not include character portraits, animation, or detailed 3D character models
+- Preset deterministic story content; no AI API, credentials, Firebase, Discord messaging, or game service integrations
 
 ## Character roster
 
-- **The Witness** — player-controlled character. The display name comes from `player_name` when starting a session.
-- **The Radio Voice** — unidentified, urgent remote voice heard on the radio investigation route. Their identity stays undisclosed.
-- **The Clinic Nurse** — unnamed, observant and cautious healthcare worker concerned about patients; appears on the clinic route.
-- **The Municipal Dispatcher** — remote municipal employee who contacts the Witness about a transfer; their motives remain ambiguous.
+- **The Witness** — player-controlled character. Display name comes from the session's `player_name`.
+- **The Radio Voice** — unidentified remote voice heard through the damaged radio; identity undisclosed.
+- **The Clinic Nurse** — unnamed, observant, cautious healthcare worker concerned about patients.
+- **The Municipal Dispatcher** — remote municipal employee contacting the Witness about a transfer; motives remain ambiguous.
 
-The arrival scene includes only the Witness; the damaged radio is an environmental object until its route is chosen. The radio scene includes the Witness and remote Radio Voice, the clinic scene the Witness and Clinic Nurse, the hatch scene the Witness alone, and the dispatch scene the Witness and remote Municipal Dispatcher. Dr. Frederick M. Grant, Nurse Carter, Maria Voss, and Scar City characters do not appear in this opening prototype.
+The arrival scene contains only the Witness; the radio is an environmental object until investigated. Radio route: Witness and remote Radio Voice. Clinic route: Witness and Clinic Nurse. Hatch route: Witness alone. Dispatch: Witness and remote Municipal Dispatcher. Dr. Frederick M. Grant, Nurse Carter, Maria Voss, and characters from Scar City do not appear in this opening prototype.
 
-## Features
+## Run the game locally
 
-- FastAPI backend for session-driven story progression
-- Choice-based branching narrative with stable scene and choice IDs
-- Session tracking with simple stats and history
-- Consistent scene character data in start, advance, and session responses
-- Python-callable functions suitable for Google Colab workflows
-- Version 0 declaration (`0.0.0`) in app metadata and the `VERSION` file
-
-## Local setup
-
-1. Create a virtual environment.
-2. Install dependencies:
+1. Install Python dependencies:
    ```bash
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
-3. Run the app:
+2. Start the server from the repository directory:
    ```bash
    uvicorn app:app --reload
    ```
-4. Visit <http://localhost:8000/docs>.
+3. Open <http://localhost:8000/> for the 3D game, or <http://localhost:8000/docs> for API documentation.
+
+Use **WASD** or arrow keys to move. Approach the radio, clinic door, or hatch and press **E** (or click the object) to investigate. The narrative choices are displayed in the dialogue panel.
+
+The Three.js module is loaded from jsDelivr, so an internet connection is needed to load the 3D client. The story API and Colab functions remain Python and do not depend on the 3D client.
 
 ## API quick start
 
@@ -65,9 +62,9 @@ Check a session:
 curl http://localhost:8000/api/onboarding/session/<SESSION_ID>
 ```
 
-## Google Colab example
+## Google Colab
 
-The existing Python function calls remain available. Print the scene roster after starting a session:
+The existing Python function calls remain available independently of the browser client:
 
 ```python
 from app import StartRequest, start_game
@@ -76,7 +73,7 @@ response = start_game(StartRequest(player_name="esmith19", source="colab"))
 print(response["characters"])
 ```
 
-To advance from Colab:
+Advance the Colab session as before:
 
 ```python
 from app import AdvanceRequest, advance_game
@@ -89,7 +86,7 @@ print(next_scene["characters"])
 
 ## Tests
 
-Run the focused roster and compatibility tests with:
+Run the roster and compatibility tests:
 
 ```bash
 python -m pytest
@@ -97,7 +94,7 @@ python -m pytest
 
 ## Project version
 
-This is the Version 0 Zone 0 prequel prototype. The repo version is declared as `0.0.0` in the FastAPI metadata and the `VERSION` file.
+This remains the Version 0 Zone 0 prototype. The FastAPI metadata and `VERSION` file declare `0.0.0`.
 
 ## License
 

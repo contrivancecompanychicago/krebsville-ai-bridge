@@ -1,0 +1,34 @@
+* { box-sizing: border-box; }
+:root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #eee9dc; background: #101417; }
+html, body, #game { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body { background: #101417; }
+#world { display: block; width: 100%; height: 100%; outline: none; }
+.hidden { display: none !important; }
+.panel { background: linear-gradient(145deg, rgba(18, 22, 25, .95), rgba(27, 30, 30, .92)); border: 1px solid rgba(220, 184, 125, .33); box-shadow: 0 18px 70px rgba(0, 0, 0, .45); backdrop-filter: blur(12px); }
+.start-panel { position: absolute; z-index: 3; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(440px, calc(100vw - 32px)); padding: 32px; border-radius: 8px; }
+h1 { margin: 10px 0; font-size: clamp(2.1rem, 8vw, 3.35rem); line-height: .98; letter-spacing: -.05em; }
+h1 span { color: #d7a268; }
+.eyebrow { color: #c99a62; text-transform: uppercase; letter-spacing: .16em; font-size: .68rem; font-weight: 800; }
+.muted { color: #b7b2a7; margin: 0 0 26px; }
+label { display: block; color: #cbc5b7; font-size: .83rem; margin-bottom: 7px; }
+input { width: 100%; border: 1px solid #55534e; background: #111518; color: #fff; padding: 12px 13px; font: inherit; border-radius: 4px; margin-bottom: 12px; }
+button { color: #eee9dc; background: #292e30; border: 1px solid #68625a; border-radius: 4px; padding: 10px 13px; font: inherit; text-align: left; cursor: pointer; transition: background .15s, border-color .15s, transform .15s; }
+button:hover:not(:disabled) { background: #414342; border-color: #d7a268; transform: translateY(-1px); }
+button:disabled { opacity: .55; cursor: wait; }
+button.primary { width: 100%; background: #78512f; border-color: #bb8b55; text-align: center; font-weight: 700; }
+button.primary:hover:not(:disabled) { background: #91643a; }
+.error { min-height: 1em; color: #f0a090; font-size: .85rem; }
+.hud { position: absolute; top: 22px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; text-shadow: 0 2px 8px #000; }
+.hud h2 { margin: 4px 0; font-size: clamp(1.1rem, 4vw, 1.65rem); }
+#status { color: #c4c0b7; background: rgba(15, 18, 19, .65); padding: 9px 12px; border-radius: 4px; font-size: .8rem; }
+.dialogue { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); width: min(820px, calc(100vw - 32px)); max-height: 45vh; overflow: auto; padding: 19px 22px; border-radius: 7px; }
+.dialogue p { color: #e5e0d6; line-height: 1.55; margin: 12px 0 15px; }
+.roster { display: flex; flex-wrap: wrap; gap: 7px; }
+.character-badge { border-radius: 99px; padding: 5px 9px; font-size: .72rem; color: #f4e3c9; background: rgba(151, 103, 54, .23); border: 1px solid rgba(211, 165, 104, .35); }
+.character-badge.remote { color: #c5d5e0; background: rgba(68, 105, 132, .25); border-color: rgba(120, 166, 196, .4); }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice-button { flex: 1 1 200px; }
+.interaction-prompt { position: absolute; left: 50%; bottom: 48vh; transform: translateX(-50%); padding: 8px 13px; border-radius: 4px; background: rgba(15, 18, 19, .85); border: 1px solid rgba(211, 165, 104, .55); color: #f3dfc5; font-size: .85rem; pointer-events: none; }
+.controls-hint { position: absolute; right: 20px; bottom: 20px; color: #ddd6c9; background: rgba(13, 16, 17, .72); border-radius: 4px; padding: 8px 11px; font-size: .74rem; pointer-events: none; }
+.toast { position: absolute; top: 92px; left: 50%; transform: translateX(-50%); background: rgba(15, 18, 19, .9); color: #ead9c2; border: 1px solid rgba(211, 165, 104, .45); padding: 9px 14px; border-radius: 4px; font-size: .84rem; }
+@media (max-width: 620px) { .hud { top: 12px; left: 12px; right: 12px; } .dialogue { bottom: 12px; width: calc(100vw - 20px); padding: 14px; max-height: 52vh; } .controls-hint { left: 12px; right: auto; bottom: auto; top: 76px; font-size: .68rem; } .interaction-prompt { bottom: 54vh; } #status { font-size: .68rem; } }

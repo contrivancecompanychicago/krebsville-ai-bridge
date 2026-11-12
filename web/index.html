@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101417" />
+    <title>Krebsville Nights: Zone 0</title>
+    <link rel="stylesheet" href="/game-assets/style.css" />
+  </head>
+  <body>
+    <main id="game" aria-label="Krebsville Nights Zone 0 3D game">
+      <canvas id="world" aria-label="3D alley game world"></canvas>
+
+      <section id="start-panel" class="panel start-panel">
+        <p class="eyebrow">A Krebsville Nights prequel · Version 0</p>
+        <h1>Krebsville Nights<br /><span>Zone 0</span></h1>
+        <p class="muted">The Alley Behind the Clinic</p>
+        <label for="player-name">Witness name</label>
+        <input id="player-name" maxlength="64" value="Visitor" autocomplete="name" />
+        <button id="start-button" class="primary">Enter the alley</button>
+        <p id="start-error" class="error" role="alert"></p>
+      </section>
+
+      <header id="hud" class="hud hidden">
+        <div><span class="eyebrow">ZONE 0 · SCENE</span><h2 id="scene-title"></h2></div>
+        <div id="status">Rainfall · 02:17 AM</div>
+      </header>
+
+      <section id="dialogue" class="panel dialogue hidden" aria-live="polite">
+        <div id="roster" class="roster"></div>
+        <p id="scene-message"></p>
+        <div id="choices" class="choices"></div>
+      </section>
+
+      <div id="interaction-prompt" class="interaction-prompt hidden">Press E to investigate</div>
+      <div id="controls-hint" class="controls-hint hidden">W A S D move · E investigate · Click a highlighted object</div>
+      <div id="toast" class="toast hidden" role="status"></div>
+    </main>
+
+    <script type="module" src="/game-assets/game.js"></script>
+  </body>
+</html>

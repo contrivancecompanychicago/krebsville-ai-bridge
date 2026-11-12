@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Dict, List, Literal, Optional
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 APP_VERSION = "0.0.0"
+WEB_DIR = Path(__file__).resolve().parent / "web"
 
 app = FastAPI(
     title="Krebsville AI Bridge",
@@ -237,6 +241,15 @@ def apply_choice(session: SessionState, choice_id: str) -> None:
     elif choice_id == "refuse":
         session.stats["clarity"] += 2
         session.stats["trust"] += 1
+
+
+@app.get("/")
+def game_home() -> FileResponse:
+    """Serve the optional browser game while keeping API and Colab calls intact."""
+    return FileResponse(WEB_DIR / "index.html")
+
+
+app.mount("/game-assets", StaticFiles(directory=WEB_DIR), name="game-assets")
 
 
 @app.get("/health")
